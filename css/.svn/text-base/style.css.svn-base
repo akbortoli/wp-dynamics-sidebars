@@ -1,0 +1,8 @@
+#postbox-container-1 #dynamic-sidebar-select, #postbox-container-1 #dynamic-sidebar-text { width: auto; max-width: 70%; }
+#postbox-container-2 #dynamic-sidebar-select, #postbox-container-2 #dynamic-sidebar-text { width: auto; max-width: 85%; }
+#dynamic-sidebar-select, #dynamic-sidebar-text { display: inline-block; margin-bottom: 7px; padding: 3px 3px 4px; }
+#dynamic-sidebar-error, #dynamic-sidebar-message { margin: 7px 0 7px; padding: 0 .6em; border-radius: 3px; border-width: 1px; border-style: solid; }
+#dynamic-sidebar-message { background-color: #FFFFE0; border-color: #E6DB55; }
+#dynamic-sidebar-error { background-color: #FFEBE8; border-color: #C00; }
+#dynamic-sidebar-error p, #dynamic-sidebar-message p { color: #333; margin: .5em 0; padding: 2px; }
+#dynamic-sidebar-add, #dynamic-sidebar-cancel { display: inline-block; }
