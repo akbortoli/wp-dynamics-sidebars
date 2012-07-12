@@ -6,7 +6,7 @@
  * Author: Alysson Bortoli
  * Author Name: Alysson Bortoli
  * Author URI: http://twitter.com/akbortoli
- * Version: 1.0.2
+ * Version: 1.0.3
  * License: GPLv2 or later
  */
 

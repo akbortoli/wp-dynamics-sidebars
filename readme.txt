@@ -4,7 +4,7 @@ Contributors: alyssonweb
 Tags: sidebar, custom, dynamic, widget, different
 Requires at least: 3.0
 Tested up to: 3.4.1
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6NTZTQUPXP8F2
@@ -17,12 +17,31 @@ Have a custom sidebar (widget area) for every pages, posts and/or custom post ty
 Want your pages, posts and/or custom post types to have different sidebar?
 An awesome plugin that let you have a custom sidebar (widget area) for every page, post and/or custom post type.
 
+[Documentation](https://github.com/alyssonweb/wp-dynamics-sidebars/wiki) | [Support Forum](https://github.com/alyssonweb/wp-dynamics-sidebars/issues)
+
 **Usage**
 
 By default it will add 'custom-sidebar' support for the following post types:
 
 * Post
 * Page
+
+**IMPORTANT: Showing the sidebar**
+
+***Note you can use this wherever you like to show you sidebar***
+
+`<?php
+	dynamic_sidebar( get_the_sidebar() );
+?>`
+
+Or
+
+`<?php
+	$sidebar = get_the_sidebar();
+	if ( is_active_sidebar( $sidebar ) ) {
+		dynamic_sidebar( $sidebar );
+	}
+?>`
 
 **Adding support for custom post type**
 
@@ -42,11 +61,11 @@ On you 'functions.php' file
 
 When you register your custom post type, on 'register_post_type' call.
 
-[register_post_type function reference](http://codex.wordpress.org/Function_Reference/register_post_type) for more information
+[Function Reference register_post_type](http://codex.wordpress.org/Function_Reference/register_post_type) for more information
 
 `<?php
 	$args = array( 'supports' => array( 'custom-sidebar' ) );
-    register_post_type( 'post_type', $args );
+	register_post_type( 'post_type', $args );
 ?>`
 
 **Removing support for pages, posts and/or custom post types**
@@ -65,33 +84,16 @@ On you 'functions.php' file add this
 	}
 ?>`
 
-**Showing the sidebar**
-
-***Note you can use this wherever you like to show you sidebar***
-
-`<?php
-	dynamic_sidebar( get_the_sidebar() );
-?>`
-
-Or
-
-`<?php
-	$sidebar = get_the_sidebar();
-	if ( is_active_sidebar( $sidebar ) ) {
-		dynamic_sidebar( $sidebar );
-	}
-?>`
-
 **Changing sidebar args**
 
 On your 'functions.php' file just add the following code.
 
 `<?php
-	add_filter( 'ds_sidebar_args', 'my_sidebar_args' );
+	add_filter( 'ds_sidebar_args', 'my_sidebar_args', 1, 3 );
 
-	function my_sidebar_args( $defaults ) {
+	function my_sidebar_args( $defaults, $sidebar_name, $sidebar_id ) {
 		$args = array(
-			'description'   => 'My widget area',
+			'description'   => "$sidebar_name widget area",
 			'before_widget' => '<li id="%1$s" class="widget-container %2$s">',
 			'after_widget'  => '</li>', 'after_widget',
 			'before_title'  => '<h3 class="widget-title">',
@@ -102,7 +104,7 @@ On your 'functions.php' file just add the following code.
 	}
 ?>`
 
-[Documentation]() | [Support Forum]()
+[Documentation](https://github.com/alyssonweb/wp-dynamics-sidebars/wiki) | [Support Forum](https://github.com/alyssonweb/wp-dynamics-sidebars/issues)
 
 **Don't forget to check the 'Other Notes' tab for a list of all function and hook you can use.**
 
@@ -134,6 +136,10 @@ On your 'functions.php' file just add the following code.
 No FAQ yet.
 
 == Changelog ==
+
+= 1.0.3 =
+
+* Filter 'ds_save_ajax_message' now have a 2 param $error, true if has error false if everything is ok
 
 = 1.0.2 =
 
@@ -195,7 +201,7 @@ No FAQ yet.
 
 == Upgrade Notice ==
 
-Changed Action 'ds_construct' to 'ds_init'
+Changed to Filter 'ds_save_ajax_message'
 
 == Internationalization (i18n) ==
 

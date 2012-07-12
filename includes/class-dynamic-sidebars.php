@@ -346,19 +346,19 @@ class Dynamic_Sidebars
 		if ( 'page' == $post->post_type ) {
 			if ( ! current_user_can( 'edit_page', $post_id ) ) {
 				$response['error']   = true;
-				$response['message'] = apply_filters( 'ds_save_ajax_message', __( 'You do not have permission to edit this page.', DS_PLUGIN_I18N_DOMAIN ) );
+				$response['message'] = apply_filters( 'ds_save_ajax_message', __( 'You do not have permission to edit this page.', DS_PLUGIN_I18N_DOMAIN ), true );
 			}
 		} elseif ( 'post' == $post->post_type ) {
 			if ( ! current_user_can( 'edit_post', $post_id ) ) {
 				$response['error']   = true;
-				$response['message'] = apply_filters( 'ds_save_ajax_message', __( 'You do not have permission to edit this post.', DS_PLUGIN_I18N_DOMAIN ) );
+				$response['message'] = apply_filters( 'ds_save_ajax_message', __( 'You do not have permission to edit this post.', DS_PLUGIN_I18N_DOMAIN ), true );
 			}
 		} else {
 			// check custom permissions
 			$continue = apply_filters( 'ds_save_permissions', true, $post_id, $post );
 			if ( ! $continue ) {
 				$response['error']   = true;
-				$response['message'] = apply_filters( 'ds_save_ajax_message', sprintf( __( 'You do not have permission to edit this %s.', DS_PLUGIN_I18N_DOMAIN ), $post->post_type ) );
+				$response['message'] = apply_filters( 'ds_save_ajax_message', sprintf( __( 'You do not have permission to edit this %s.', DS_PLUGIN_I18N_DOMAIN ), $post->post_type ), true );
 			}
 		}
 
@@ -372,10 +372,10 @@ class Dynamic_Sidebars
 		// Return success message
 		if ( $saved ) {
 			$response['error']   = false;
-			$response['message'] = apply_filters( 'ds_save_ajax_message', __( 'Sidebar updated.', DS_PLUGIN_I18N_DOMAIN ) );
+			$response['message'] = apply_filters( 'ds_save_ajax_message', __( 'Sidebar updated.', DS_PLUGIN_I18N_DOMAIN ), false );
 		} else {
 			$response['error']   = true;
-			$response['message'] = apply_filters( 'ds_save_ajax_message', __( 'Sorry an error occurred.', DS_PLUGIN_I18N_DOMAIN ) );
+			$response['message'] = apply_filters( 'ds_save_ajax_message', __( 'Sorry an error occurred.', DS_PLUGIN_I18N_DOMAIN ), true );
 		}
 
 		echo json_encode( $response, JSON_FORCE_OBJECT );
