@@ -4,7 +4,7 @@ Contributors: alyssonweb
 Tags: sidebar, custom, dynamic, widget, different
 Requires at least: 3.0
 Tested up to: 3.4.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6NTZTQUPXP8F2
@@ -137,6 +137,10 @@ No FAQ yet.
 
 == Changelog ==
 
+= 1.0.4 =
+
+* Fixed issue where sidebar is not registered.
+
 = 1.0.3 =
 
 * Filter 'ds_save_ajax_message' now have a 2 param $error, true if has error false if everything is ok
@@ -201,7 +205,7 @@ No FAQ yet.
 
 == Upgrade Notice ==
 
-Changed to Filter 'ds_save_ajax_message'
+Fixed issue where sidebar is not registered
 
 == Internationalization (i18n) ==
 

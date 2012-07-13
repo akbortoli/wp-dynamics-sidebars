@@ -68,18 +68,20 @@ class Dynamic_Sidebars
 		if ( post_type_exists( 'page' ) && ! post_type_supports( 'page', 'custom-sidebar' ) )
 			add_post_type_support( 'page', 'custom-sidebar' );
 
+		// Hook up actions
+		add_action( 'init', array( &$this, 'register_sidebars' ), 11 );
+
 		if ( is_admin() ) {
-			// Hook up actions
 			add_action( 'init', array( &$this, 'register_column' ), 100 );
-			add_action( 'init', array( &$this, 'register_sidebars' ), 11 );
 			add_action( 'add_meta_boxes', array( &$this, 'add_metabox' ), 12 );
 			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_script_style' ) );
 			add_action( 'bulk_edit_custom_box', array( &$this, 'bulk_edit_custom_box' ), 10, 2 );
 			add_action( 'quick_edit_custom_box', array( &$this, 'quick_edit_custom_box' ), 10, 2 );
 			add_action( 'wp_ajax_ds_save_post', array( &$this, 'save_ajax' ) );
 			add_action( 'wp_ajax_ds_update_select', array( &$this, 'update_select' ) );
-			add_action( 'save_post', array( &$this, 'save' ) );
 		}
+
+		add_action( 'save_post', array( &$this, 'save' ) );
 
 		// hook
 		do_action( 'ds_init', &$this );
