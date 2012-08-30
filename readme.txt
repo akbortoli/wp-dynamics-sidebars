@@ -4,7 +4,7 @@ Contributors: alyssonweb
 Tags: sidebar, custom, dynamic, widget, different
 Requires at least: 3.0
 Tested up to: 3.4.1
-Stable tag: 1.0.4
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6NTZTQUPXP8F2
@@ -137,6 +137,14 @@ No FAQ yet.
 
 == Changelog ==
 
+= 1.0.6 =
+
+* Fixed issue when trying to activate the plugin. (PHP 5.4)
+
+= 1.0.5 =
+
+* Fixed issue when trying to uninstall the plugin.
+
 = 1.0.4 =
 
 * Fixed issue where sidebar is not registered.
@@ -205,7 +213,7 @@ No FAQ yet.
 
 == Upgrade Notice ==
 
-Fixed issue where sidebar is not registered
+Fixed issue when trying to activate the plugin. (PHP 5.4)
 
 == Internationalization (i18n) ==
 

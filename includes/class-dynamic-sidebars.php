@@ -84,7 +84,7 @@ class Dynamic_Sidebars
 		add_action( 'save_post', array( &$this, 'save' ) );
 
 		// hook
-		do_action( 'ds_init', &$this );
+		do_action( 'ds_init', $this );
 	}
 
 	// ------------------------------------------------------------

@@ -4,6 +4,8 @@
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )
 	wp_die();
 
+global $wpdb;
+
 $query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s", 'dynamic_sidebar' );
 $wpdb->query( $query );
 
