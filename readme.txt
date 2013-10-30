@@ -3,8 +3,8 @@
 Contributors: alyssonweb
 Tags: sidebar, custom, dynamic, widget, different
 Requires at least: 3.0
-Tested up to: 3.4.1
-Stable tag: 1.0.6
+Tested up to: 3.7.1
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6NTZTQUPXP8F2
@@ -14,10 +14,10 @@ Have a custom sidebar (widget area) for every pages, posts and/or custom post ty
 
 == Description ==
 
-Want your pages, posts and/or custom post types to have different sidebar?
-An awesome plugin that let you have a custom sidebar (widget area) for every page, post and/or custom post type.
+Want your pages, posts or custom post types to have a different sidebar for some or every pages?
+An awesome and simple plugin that let you have a custom sidebar (widget area) on every page, post and/or custom post type.
 
-[Documentation](https://github.com/alyssonweb/wp-dynamics-sidebars/wiki) | [Support Forum](https://github.com/alyssonweb/wp-dynamics-sidebars/issues)
+[Documentation](https://github.com/akbortoli/wp-dynamics-sidebars/wiki) | [Support Forum](https://github.com/akbortoli/wp-dynamics-sidebars/issues)
 
 **Usage**
 
@@ -28,7 +28,7 @@ By default it will add 'custom-sidebar' support for the following post types:
 
 **IMPORTANT: Showing the sidebar**
 
-***Note you can use this wherever you like to show you sidebar***
+***Note you can use this wherever you like to show your sidebar***
 
 `<?php
 	dynamic_sidebar( get_the_sidebar() );
@@ -43,35 +43,35 @@ Or
 	}
 ?>`
 
+
 **Adding support for custom post type**
 
-In order to user this plugin features with your custom post type you must add a feature suppport to it.
-Do it by doing this:
+In order to use this plugin features with your `custom post type` you must add a `feature support to it`.
+Do it by:
 
-On you 'functions.php' file
+Adding this snippet to your `functions.php` file:
 `<?php
 	add_action( 'after_setup_theme', 'theme_setup' );
 
 	function theme_setup()
 	{
-		add_post_type_support( 'post_type', 'custom-sidebar' );
+		add_post_type_support( 'post type name', 'custom-sidebar' );
 		// add another one here
 	}
 ?>`
 
-When you register your custom post type, on 'register_post_type' call.
-
-[Function Reference register_post_type](http://codex.wordpress.org/Function_Reference/register_post_type) for more information
+Or by adding it to `supports` when you register your custom post type.
+Check the [register_post_type Function Reference](http://codex.wordpress.org/Function_Reference/register_post_type) for more information.
 
 `<?php
 	$args = array( 'supports' => array( 'custom-sidebar' ) );
-	register_post_type( 'post_type', $args );
+	register_post_type( 'post type name', $args );
 ?>`
 
 **Removing support for pages, posts and/or custom post types**
 
-To remove support from pages, posts and/or custom post type do like so:
-On you 'functions.php' file add this
+To remove this plugin support from pages, posts or custom post type do like so:
+On you `functions.php` file add this
 
 `<?php
 	add_action( 'after_setup_theme', 'theme_setup' );
@@ -80,40 +80,41 @@ On you 'functions.php' file add this
 	{
 		remove_post_type_support( 'post', 'custom-sidebar' ); // to remove from posts
 		remove_post_type_support( 'page', 'custom-sidebar' ); // to remove from pages
-		remove_post_type_support( 'custom post type', 'custom-sidebar' ); // to remove from ctp
+		remove_post_type_support( 'custom post type', 'custom-sidebar' ); // to remove from custom CPT
 	}
 ?>`
 
 **Changing sidebar args**
 
-On your 'functions.php' file just add the following code.
+If you have a sidebar that needs to be wrapped with anything other than the default `<li>` you may want to change the arguments to fit your needs.
+On your `functions.php` file just add the following code.
 
 `<?php
 	add_filter( 'ds_sidebar_args', 'my_sidebar_args', 1, 3 );
 
 	function my_sidebar_args( $defaults, $sidebar_name, $sidebar_id ) {
 		$args = array(
-			'description'   => "$sidebar_name widget area",
-			'before_widget' => '<li id="%1$s" class="widget-container %2$s">',
-			'after_widget'  => '</li>', 'after_widget',
-			'before_title'  => '<h3 class="widget-title">',
-			'after_title'   => '</h3>', 'after_title',
+			'description'   => "$sidebar_name widget area"
+			, 'before_widget' => '<li id="%1$s" class="widget-container %2$s">'
+			, 'after_widget'  => '</li>'
+			, 'before_title'  => '<h3 class="widget-title">'
+			, 'after_title'   => '</h3>'
 		);
 
 		return $args;
 	}
 ?>`
 
-[Documentation](https://github.com/alyssonweb/wp-dynamics-sidebars/wiki) | [Support Forum](https://github.com/alyssonweb/wp-dynamics-sidebars/issues)
+[Documentation](https://github.com/akbortoli/wp-dynamics-sidebars/wiki) | [Support Forum](https://github.com/akbortoli/wp-dynamics-sidebars/issues)
 
-**Don't forget to check the 'Other Notes' tab for a list of all function and hook you can use.**
+**Don't forget to check the `Other Notes` tab for a list of all function and hook you can use.**
 
 == Installation ==
 
 **Please Note**
 
 * Requires at least: 3.0
-* Tested up to: 3.4.1
+* Tested up to: 3.7.1
 
 **Install**
 
@@ -136,6 +137,11 @@ On your 'functions.php' file just add the following code.
 No FAQ yet.
 
 == Changelog ==
+
+= 1.0.7 =
+
+* Typo: Fixed some typos on the documentation
+* Fix: Removed extra array items on the `$args` array
 
 = 1.0.6 =
 
@@ -213,7 +219,7 @@ No FAQ yet.
 
 == Upgrade Notice ==
 
-Fixed issue when trying to activate the plugin. (PHP 5.4)
+Bug fixes and improvements.
 
 == Internationalization (i18n) ==
 
