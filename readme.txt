@@ -1,6 +1,6 @@
 === Dynamics Sidebars ===
 
-Contributors: alyssonweb
+Contributors: alyssonweb, akbortoli
 Tags: sidebar, custom, dynamic, widget, different
 Requires at least: 3.0
 Tested up to: 3.7.1
