@@ -106,7 +106,7 @@ if ( ! function_exists( 'get_custom_sidebars' ) ) :
     function get_custom_sidebars()
     {
         global $wpdb;
-        $query = $wpdb->prepare( "SELECT post_id, meta_value as name FROM $wpdb->postmeta WHERE meta_key = '%s' GROUP BY meta_value", CS_PLUGIN_CUSTOM_FIELD );
+        $query = $wpdb->prepare( "SELECT post_id, meta_value as name FROM $wpdb->postmeta WHERE meta_key = '%s' GROUP BY meta_value", _CS_PLUGIN_CUSTOM_FIELD );
         return apply_filters( 'cs_custom_sidebars', $wpdb->get_results( $query, OBJECT ) );
     }
 

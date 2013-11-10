@@ -66,7 +66,7 @@ define( '_CS_PLUGIN_CUSTOM_FIELD', 'custom_sidebar' );
 // ------------------------------------------------------------
 
 // load text domain
-load_plugin_textdomain( CS_PLUGIN_I18N_DOMAIN, null, dirname( plugin_basename( __FILE__ ) ) );
+load_plugin_textdomain( _CS_PLUGIN_I18N_DOMAIN, null, dirname( plugin_basename( __FILE__ ) ) );
 
 // ------------------------------------------------------------
 

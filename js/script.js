@@ -50,22 +50,22 @@
                     , custom_sidebar_select: select
                     , custom_sidebar_text:   text
                 }
-                , success: function(data) {
-                    if ( data ) {
-                        if ( ! data.error ) {
+                , success: function(response) {
+                    if ( response ) {
+                        if ( response.success ) {
                             $('#custom-sidebar-message')
-                                .html('<p>' + data.message + '</p>')
+                                .html('<p>' + response.data.message + '</p>')
                                 .show();
                         } else {
                             $('#custom-sidebar-error')
-                                .html('<p>' + data.message + '</p>')
+                                .html('<p>' + response.data.message + '</p>')
                                 .show();
                         }
                     }
 
                     that.removeAttr('disabled');
                 }
-                , error: function(data) {
+                , error: function(response) {
                     that.removeAttr('disabled');
                 }
             });

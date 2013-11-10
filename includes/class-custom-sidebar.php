@@ -41,6 +41,18 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
          */
         protected $plugin_path;
 
+        // ------------------------------------------------------------
+
+        /**
+         * Plugin URL
+         *
+         * @access protected
+         * @var string
+         */
+        protected $plugin_url;
+
+        // ------------------------------------------------------------
+
         /**
          * Plugin File
          *
@@ -53,9 +65,6 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
         /**
          * Constructor
-         *
-         * @access public
-         * @return void
          */
         public function __construct()
         {
@@ -67,6 +76,9 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
             // plugin path
             $this->plugin_path = realpath( dirname( __FILE__ ) . '/../' );
+
+            // plugin url
+            $this->plugin_url = plugins_url( basename( $this->plugin_path ), _CS_PLUGIN_I18N_DOMAIN );
 
             // plugin file
             $this->plugin_file = realpath( dirname( __FILE__ ) . '/../dynamics-sidebars.php' );
@@ -260,12 +272,8 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
         /**
          * Display Metabox
-         *
          * Display the HTML content for the dynamic sidebar metabox
          *
-         * @access public
-         * @param $post Current post data
-         * @return void
          */
         public function render_metabox()
         {
@@ -280,45 +288,46 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
             $selected = apply_filters( 'cs_selected_sidebar', get_the_sidebar( $post_id ) );
             $sidebars = apply_filters( 'cs_registered_sidebars', $wp_registered_sidebars );
-            ?>
+
+        ?>
             <div id="custom-sidebar-box">
                 <?php
-                // hook: cs_pre_html_metabox
-                do_action('cs_pre_html_metabox');
+                    // hook: cs_pre_html_metabox
+                    do_action('cs_pre_html_metabox');
                 ?>
                 <div id="custom-sidebar-message" style="display: none;"></div>
                 <div id="custom-sidebar-error" style="display: none;"></div>
 
-                <select id="custom-sidebar-select" name="<?php echo CS_PLUGIN_CUSTOM_FIELD; ?>_select">
-                    <option value=""><?php echo esc_html( __( '&mdash; None &mdash;', _CS_PLUGIN_I18N_DOMAIN ) ); ?></option>
+                <select id="custom-sidebar-select" name="<?php echo _CS_PLUGIN_CUSTOM_FIELD; ?>_select">
+                    <option value="" <?php selected( $selected, '' ); ?>><?php echo esc_html( __( '&mdash; None &mdash;', _CS_PLUGIN_I18N_DOMAIN ) ); ?></option>
                     <?php foreach ( $sidebars as $s ) : ?>
                         <option value="<?php echo esc_attr( $s[ 'name' ] ); ?>" <?php selected( $selected, $s[ 'name' ] ); ?>><?php echo $s[ 'name' ]; ?></option>
                     <?php endforeach; ?>
                 </select>
 
-                <div class="custom-sidebar-add-container">
+<!--                <div class="custom-sidebar-add-container">-->
                     <?php
-                    // hook: cs_pre_html_metabox
-                    do_action('cs_pre_html_metabox_add');
+                        // hook: cs_pre_html_metabox
+                        do_action('cs_pre_html_metabox_add');
                     ?>
-                    <input type="text" id="custom-sidebar-text" name="<?php echo CS_PLUGIN_CUSTOM_FIELD; ?>_text" value="" style="display: none;" />
+                    <input type="text" id="custom-sidebar-text" name="<?php echo _CS_PLUGIN_CUSTOM_FIELD; ?>_text" value="" style="display: none;" />
                     <a href="#" class="button" id="custom-sidebar-add"><?php _e( 'New', _CS_PLUGIN_I18N_DOMAIN ); ?></a>
                     <a href="#" class="button" id="custom-sidebar-cancel" style="display: none;"><?php _e( 'Cancel', _CS_PLUGIN_I18N_DOMAIN ); ?></a>
                     <?php
-                    // hook: cs_html_metabox_add
-                    do_action('cs_html_metabox_add');
+                        // hook: cs_html_metabox_add
+                        do_action('cs_html_metabox_add');
                     ?>
-                </div>
+<!--                </div>-->
 
                 <br class="clear"/>
                 <a href="#" class="button-primary" id="custom-sidebar-save"><?php _e( 'Save', _CS_PLUGIN_I18N_DOMAIN ); ?></a>
 
                 <?php
-                // hook: cs_html_metabox
-                do_action('cs_html_metabox');
+                    // hook: cs_html_metabox
+                    do_action('cs_html_metabox');
                 ?>
             </div>
-            <?php
+        <?php
             // hook: cs_render_metabox
             do_action( 'cs_render_metabox' );
         }
@@ -326,15 +335,13 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
         // ------------------------------------------------------------
 
         /**
-         * Save
          *
+         * Save
          * Save the dynamic sidebar data to database
          *
-         * @uses save_sidebar()
-         * @access public
-         * @param $post_id Current POST id
-         * @param $post Current POST object
-         * @return void
+         * @param $post_id
+         * @param bool $post
+         * @return mixed
          */
         public function save( $post_id, $post = false )
         {
@@ -350,7 +357,7 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
                 $nonce    = 'bulk-posts';
                 $_wpnonce = isset( $_REQUEST['_wpnonce'] ) ? $_REQUEST['_wpnonce'] : null;
             } else {
-                $nonce    = 'update-' . $post->post_type . '_' . $post_id;
+                $nonce    = 'update-post_' . $post_id;
                 $_wpnonce = isset( $_POST['_wpnonce'] ) ? $_POST['_wpnonce'] : null;
             }
 
@@ -359,6 +366,9 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
             if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
                 return $post_id;
             }
+
+//            print_a($_POST);
+//            wp_die();
 
             // verify if this came from the our screen and with proper authorization,
             // because save_post can be triggered at other times
@@ -400,7 +410,6 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
         /**
          * Save ajax
-         *
          * Save the dynamic sidebar data to database via ajax
          *
          * @uses save_sidebar()
@@ -416,70 +425,69 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
             $post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 
             $die_error = array(
-                'error' => true
-                , 'message' => 'You don\'t have permission to access this page.'
+                'message' => 'You don\'t have permission to access this page.'
             );
 
             $response = array(
-                'error' => false
-                , 'message' => ''
+                'message' => ''
             );
-        
-        // verify this came from the our screen and with proper authorization,
-        if ( ! wp_verify_nonce( $_nonce, _CS_NONCE ) ) {
-            wp_die(json_encode( $die_error, JSON_FORCE_OBJECT ));
-        }
 
-        // get post
-        $post = get_post( $post_id );
-        if ( ! $post ) {
-            wp_die(json_encode( $die_error, JSON_FORCE_OBJECT ));
-        }
-
-        // Check permissions
-        if ( 'page' == $post->post_type ) {
-            if ( ! current_user_can( 'edit_page', $post_id ) ) {
-                $response['error'] = true;
-                $response['message'] = apply_filters( 'cs_save_ajax_message', __( 'You do not have permission to edit this page.', _CS_PLUGIN_I18N_DOMAIN ), true );
-            }
-        } elseif ( 'post' == $post->post_type ) {
-            if ( ! current_user_can( 'edit_post', $post_id ) ) {
-                $response['error'] = true;
-                $response['message'] = apply_filters( 'cs_save_ajax_message', __( 'You do not have permission to edit this post.', _CS_PLUGIN_I18N_DOMAIN ), true );
-            }
-        } else {
-            // check custom permissions
-            if ( ! current_user_can( 'edit_post', $post_id ) ) {
-                $response['error'] = true;
-                $response['message'] = apply_filters( 'cs_save_ajax_message', sprintf( __( 'You do not have permission to edit this %s.', _CS_PLUGIN_I18N_DOMAIN ), $post->post_type ), true );
+            // verify this came from the our screen and with proper authorization,
+            if ( ! wp_verify_nonce( $_nonce, _CS_NONCE ) ) {
+                wp_send_json_error($die_error);
             }
 
-            $continue = apply_filters( 'cs_save_permissions', true, $post_id, $post, get_current_user_id() );
-            if ( ! $continue ) {
-                $response['error'] = true;
-                $response['message'] = apply_filters( 'cs_save_ajax_message', sprintf( __( 'You do not have permission to edit this %s.', _CS_PLUGIN_I18N_DOMAIN ), $post->post_type ), true );
+            // get post
+            $post = get_post( $post_id );
+            if ( ! $post ) {
+                wp_send_json_error($die_error);
             }
+
+            // Check permissions
+            if ( 'page' == $post->post_type ) {
+                if ( ! current_user_can( 'edit_page', $post_id ) ) {
+                    $response['error'] = true;
+                    $response['message'] = apply_filters( 'cs_save_ajax_message', __( 'You do not have permission to edit this page.', _CS_PLUGIN_I18N_DOMAIN ), true );
+                }
+            } elseif ( 'post' == $post->post_type ) {
+                if ( ! current_user_can( 'edit_post', $post_id ) ) {
+                    $response['message'] = apply_filters( 'cs_save_ajax_message', __( 'You do not have permission to edit this post.', _CS_PLUGIN_I18N_DOMAIN ), true );
+                }
+            } else {
+                // check custom permissions
+                if ( ! current_user_can( 'edit_post', $post_id ) ) {
+                    $response['error'] = true;
+                    $response['message'] = apply_filters( 'cs_save_ajax_message', sprintf( __( 'You do not have permission to edit this %s.', _CS_PLUGIN_I18N_DOMAIN ), $post->post_type ), true );
+                }
+
+                $continue = apply_filters( 'cs_save_permissions', true, $post_id, $post, get_current_user_id() );
+                if ( ! $continue ) {
+                    $response['error'] = true;
+                    $response['message'] = apply_filters( 'cs_save_ajax_message', sprintf( __( 'You do not have permission to edit this %s.', _CS_PLUGIN_I18N_DOMAIN ), $post->post_type ), true );
+                }
+            }
+
+            $response = apply_filters( 'cs_save_ajax', $response, $post_id );
+
+            // OK, we're authenticated: we need to find and save the data
+            if ( ! $response['error'] ) {
+                $response = $this->save_sidebar( $post_id );
+            }
+
+            // Return success message
+            if ( ! $response['error'] ) {
+                $response['message'] = apply_filters( 'cs_save_ajax_message', __( 'Sidebar updated.', _CS_PLUGIN_I18N_DOMAIN ), false );
+            } elseif ($response['error'] && empty($response['message'])) {
+                $response['message'] = apply_filters( 'cs_save_ajax_message', __( 'Sorry an error occurred.', _CS_PLUGIN_I18N_DOMAIN ), true );
+            }
+
+            // hook: cs_save_ajax
+            do_action( 'cs_save_ajax', $response, $post_id );
+
+            // success
+            unset($response['error']);
+            wp_send_json_success($response);
         }
-
-        $response = apply_filters( 'cs_save_ajax', $response, $post_id );
-
-        // OK, we're authenticated: we need to find and save the data
-        if ( ! $response['error'] ) {
-            $response = $this->save_sidebar( $post_id );
-        }
-
-        // Return success message
-        if ( ! $response['error'] ) {
-            $response['message'] = apply_filters( 'cs_save_ajax_message', __( 'Sidebar updated.', _CS_PLUGIN_I18N_DOMAIN ), false );
-        } elseif ($response['error'] && empty($response['message'])) {
-            $response['message'] = apply_filters( 'cs_save_ajax_message', __( 'Sorry an error occurred.', _CS_PLUGIN_I18N_DOMAIN ), true );
-        }
-
-        // hook: cs_save_ajax
-        do_action( 'cs_save_ajax', $response, $post_id );
-
-        wp_die(json_encode( $response, JSON_FORCE_OBJECT ));
-    }
 
         // ------------------------------------------------------------
 
@@ -508,14 +516,15 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
             $selected = apply_filters( 'cs_selected_sidebar', get_the_sidebar( $post_id ) );
             $sidebars = apply_filters( 'cs_registered_sidebars', $wp_registered_sidebars );
-            ?>
+
+        ?>
             <option value=""><?php echo esc_html( __( '&mdash; None &mdash;', _CS_PLUGIN_I18N_DOMAIN ) ); ?></option>
             <?php foreach ( $sidebars as $s ) : ?>
-            <option value="<?php echo esc_attr( $s[ 'name' ] ); ?>" <?php selected( $selected, $s[ 'name' ] ); ?>><?php echo $s[ 'name' ]; ?></option>
-        <?php endforeach; ?>
+                <option value="<?php echo esc_attr( $s[ 'name' ] ); ?>" <?php selected( $selected, $s[ 'name' ] ); ?>><?php echo $s[ 'name' ]; ?></option>
+            <?php endforeach; ?>
             <?php
-            do_action('cs_update_select');
-            wp_die();
+                do_action('cs_update_select');
+                wp_die();
             ?>
         <?php
         }
@@ -524,10 +533,9 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
         /**
          * Save/Update Sidebar
-         *
          * Save custom field 'custom_sidebar'
          *
-         * @access public
+         * @param $post_id
          * @return array
          */
         public function save_sidebar( $post_id )
@@ -545,11 +553,11 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
             $old = get_the_sidebar( $post_id );
 
             if ( ! isset( $_REQUEST['bulk_edit'] ) ) {
-                $select = isset( $_POST[ CS_PLUGIN_CUSTOM_FIELD . '_select' ] ) ? wp_filter_nohtml_kses( trim( $_POST[ CS_PLUGIN_CUSTOM_FIELD . '_select' ] ) ) : '';
-                $text   = isset( $_POST[ CS_PLUGIN_CUSTOM_FIELD . '_text' ] ) ? wp_filter_nohtml_kses( trim( $_POST[ CS_PLUGIN_CUSTOM_FIELD . '_text' ] ) ) : '';
+                $select = isset( $_POST[ _CS_PLUGIN_CUSTOM_FIELD. '_select' ] ) ? wp_filter_nohtml_kses( trim( $_POST[ _CS_PLUGIN_CUSTOM_FIELD. '_select' ] ) ) : '';
+                $text   = isset( $_POST[ _CS_PLUGIN_CUSTOM_FIELD. '_text' ] ) ? wp_filter_nohtml_kses( trim( $_POST[ _CS_PLUGIN_CUSTOM_FIELD. '_text' ] ) ) : '';
             } else {
-                $select = isset( $_REQUEST[ CS_PLUGIN_CUSTOM_FIELD . '_select' ] ) ? wp_filter_nohtml_kses( trim( $_REQUEST[ CS_PLUGIN_CUSTOM_FIELD . '_select' ] ) ) : '';
-                $text   = isset( $_REQUEST[ CS_PLUGIN_CUSTOM_FIELD . '_text' ] ) ? wp_filter_nohtml_kses( trim( $_REQUEST[ CS_PLUGIN_CUSTOM_FIELD . '_text' ] ) ) : '';
+                $select = isset( $_REQUEST[ _CS_PLUGIN_CUSTOM_FIELD. '_select' ] ) ? wp_filter_nohtml_kses( trim( $_REQUEST[ _CS_PLUGIN_CUSTOM_FIELD. '_select' ] ) ) : '';
+                $text   = isset( $_REQUEST[ _CS_PLUGIN_CUSTOM_FIELD. '_text' ] ) ? wp_filter_nohtml_kses( trim( $_REQUEST[ _CS_PLUGIN_CUSTOM_FIELD. '_text' ] ) ) : '';
             }
 
             $custom_sidebar = $select;
@@ -565,7 +573,9 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
             // no change
             if ( -1 == $custom_sidebar ) {
                 return $response;
-        }
+            }
+
+            var_dump($custom_sidebar);
 
             // Create new
             if ( '' != $custom_sidebar && empty( $old ) ) {
@@ -611,7 +621,12 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
             // Get all custom sidebars
             $sidebars = get_custom_sidebars();
+
             foreach ( $sidebars as $sidebar ) {
+                if (empty($sidebar->name)) {
+                    continue;
+                }
+
                 $name = esc_html( $sidebar->name );
                 $id   = sanitize_title( $sidebar->name );
 
@@ -638,7 +653,7 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
                 // register sidebars
                 register_sidebar(
                     array(
-                        'name'          => $name
+                        'name'            => $name
                         , 'id'            => $id
                         , 'description'   => $sidebar_args[ 'description' ]
                         , 'before_widget' => $sidebar_args[ 'before_widget' ]
@@ -665,8 +680,8 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
             global $post_id;
 
             // script
-            wp_enqueue_script( 'cs-plugin-script', plugins_url( $this->plugin_path . '/js/script.min.js', _CS_PLUGIN_I18N_DOMAIN ), array( 'jquery' ), null, true );
-            wp_localize_script( 'cs-plugin-script', '_ds', array(
+            wp_enqueue_script( 'cs-plugin-script', $this->plugin_url . '/js/script.min.js', array( 'jquery' ), null, true );
+            wp_localize_script( 'cs-plugin-script', '_cs', array(
                     'ajaxurl' => admin_url( 'admin-ajax.php' )
                     , 'post_id' => $post_id
                     , 'nonce'   => wp_create_nonce( _CS_NONCE )
@@ -674,7 +689,7 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
             );
 
             // style
-            wp_register_style( 'cs-plugin-styles', plugins_url( $this->plugin_path . '/css/style.min.css', _CS_PLUGIN_I18N_DOMAIN ), false, null );
+            wp_register_style( 'cs-plugin-styles', $this->plugin_url . '/css/style.min.css', false, null );
             wp_enqueue_style( 'cs-plugin-styles' );
         }
 
@@ -744,18 +759,19 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
             // $selected = apply_filters( 'cs_selected_sidebar', get_the_sidebar( $post_id ) );
             $sidebars = apply_filters( 'cs_registered_sidebars', $wp_registered_sidebars );
-            ?>
+
+        ?>
             <fieldset class="inline-edit-col-right">
                 <div id="custom-sidebar-box-bulk">
                     <div class="inline-edit-col">
                         <label>
                             <?php
-                            // hook: cs_pre_html_bulk_metabox
-                            do_action('cs_pre_html_bulk_metabox');
+                                // hook: cs_pre_html_bulk_metabox
+                                do_action('cs_pre_html_bulk_metabox');
                             ?>
                             <span class="title"><?php _e( 'Sidebar', _CS_PLUGIN_I18N_DOMAIN ); ?></span>
 
-                            <select id="custom-sidebar-select" name="<?php echo CS_PLUGIN_CUSTOM_FIELD; ?>_select">
+                            <select id="custom-sidebar-select" name="<?php echo _CS_PLUGIN_CUSTOM_FIELD; ?>_select">
                                 <option value="-1"><?php echo esc_html( __( '&mdash; No Change &mdash;', _CS_PLUGIN_I18N_DOMAIN ) ); ?></option>
                                 <option value=""><?php echo esc_html( __( '&mdash; None &mdash;', _CS_PLUGIN_I18N_DOMAIN ) ); ?></option>
                                 <?php foreach ( $sidebars as $s ) : ?>
@@ -763,21 +779,21 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
                                 <?php endforeach; ?>
                             </select>
 
-                            <div class="custom-sidebar-add-container">
-                                <input type="text" id="custom-sidebar-text" name="<?php echo CS_PLUGIN_CUSTOM_FIELD; ?>_text" value="" style="display: none;" />
+<!--                            <div class="custom-sidebar-add-container">-->
+                                <input type="text" id="custom-sidebar-text" name="<?php echo _CS_PLUGIN_CUSTOM_FIELD; ?>_text" value="" style="display: none;" />
                                 <a href="#" class="button" id="custom-sidebar-add"><?php _e( 'New', _CS_PLUGIN_I18N_DOMAIN ); ?></a>
                                 <a href="#" class="button" id="custom-sidebar-cancel" style="display: none;"><?php _e( 'Cancel', _CS_PLUGIN_I18N_DOMAIN ); ?></a>
-                            </div>
+<!--                            </div>-->
 
                             <?php
-                            // hook: cs_html_bulk_metabox
-                            do_action('cs_html_bulk_metabox');
+                                // hook: cs_html_bulk_metabox
+                                do_action('cs_html_bulk_metabox');
                             ?>
                         </label>
                     </div>
                 </div>
             </fieldset>
-            <?php
+        <?php
             // hook: cs_render_bulk_metabox
             do_action( 'cs_render_bulk_metabox' );
         }
@@ -805,15 +821,16 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
 
             // $selected = get_the_sidebar( $post->ID );
             $sidebars = apply_filters( 'cs_registered_sidebars', $wp_registered_sidebars );
-            ?>
+
+        ?>
             <fieldset class="inline-edit-col-right">
                 <div id="custom-sidebar-box-quickedit">
                     <div class="inline-edit-col">
                         <label>
-                            <?php
+                        <?php
                             // hook: cs_pre_html_quickedit_metabox
                             do_action('cs_pre_html_quickedit_metabox');
-                            ?>
+                        ?>
                             <span class="title"><?php _e( 'Sidebar', _CS_PLUGIN_I18N_DOMAIN ); ?></span>
 
                             <select id="custom-sidebar-select" name="<?php echo CS_PLUGIN_CUSTOM_FIELD; ?>_select">
@@ -824,21 +841,21 @@ if ( ! class_exists( 'Custom_Sidebar' ) ) :
                                 <?php endforeach; ?>
                             </select>
 
-                            <div class="custom-sidebar-add-container">
+<!--                            <div class="custom-sidebar-add-container">-->
                                 <input type="text" id="custom-sidebar-text" name="<?php echo CS_PLUGIN_CUSTOM_FIELD; ?>_text" value="" style="display: none;" />
                                 <a href="#" class="button" id="custom-sidebar-add"><?php _e( 'New', _CS_PLUGIN_I18N_DOMAIN ); ?></a>
                                 <a href="#" class="button" id="custom-sidebar-cancel" style="display: none;"><?php _e( 'Cancel', _CS_PLUGIN_I18N_DOMAIN ); ?></a>
-                            </div>
+<!--                            </div>-->
 
                             <?php
-                            // hook: cs_html_quickedit_metabox
-                            do_action('cs_html_quickedit_metabox');
+                                // hook: cs_html_quickedit_metabox
+                                do_action('cs_html_quickedit_metabox');
                             ?>
                         </label>
                     </div>
                 </div>
             </fieldset>
-            <?php
+        <?php
             // hook: cs_render_quickedit_metabox
             do_action( 'cs_render_quickedit_metabox' );
         }
